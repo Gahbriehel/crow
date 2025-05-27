@@ -1,7 +1,8 @@
 "use client"
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { useReactToPrint } from "react-to-print";
+import JsBarcode from "jsbarcode";
 
 // Simplified formatToCurrency function
 const formatToCurrency = (value: number): string => {
@@ -23,61 +24,28 @@ function generateSku(businessName: string): string {
   return `${prefix}${randomDigits}`;
 }
 
-// SVG Barcode component using Code 128 encoding
-const SVGBarcode = ({ value, width = 2, height = 50 }: { value: string; width?: number; height?: number }) => {
-  // Simplified Code 128 encoding for demo purposes
-  // In production, you'd want a more complete implementation
-  const code128Pattern = {
-    'A': '11011001100', 'B': '11001101100', 'C': '11001100110',
-    '0': '11011001100', '1': '11001101100', '2': '11001100110',
-    '3': '10010011000', '4': '10010001100', '5': '10001001100',
-    '6': '10011001000', '7': '10011000100', '8': '10001100100',
-    '9': '11001001000', ' ': '11000100100'
-  };
+// Barcode component using JsBarcode
+const Barcode = ({ value, width = 2, height = 50 }: { value: string; width?: number; height?: number }) => {
+  const svgRef = useRef<SVGSVGElement>(null);
   
-  // Start pattern for Code 128B
-  const startPattern = '11010010000';
-  // Stop pattern
-  const stopPattern = '1100011101011';
-  
-  let pattern = startPattern;
-  
-  // Simple encoding - just use the characters we have patterns for
-  for (const char of value) {
-    if (code128Pattern[char as keyof typeof code128Pattern]) {
-      pattern += code128Pattern[char as keyof typeof code128Pattern];
-    } else {
-      // Default pattern for unknown characters
-      pattern += '11001001000';
+  useEffect(() => {
+    if (svgRef.current && value) {
+      try {
+        JsBarcode(svgRef.current, value, {
+          format: "CODE128",
+          width: width,
+          height: height,
+          displayValue: false,
+          margin: 0,
+          background: "transparent"
+        });
+      } catch (error) {
+        console.error("Error generating barcode:", error);
+      }
     }
-  }
+  }, [value, width, height]);
   
-  pattern += stopPattern;
-  
-  const bars = [];
-  let x = 0;
-  
-  for (let i = 0; i < pattern.length; i++) {
-    if (pattern[i] === '1') {
-      bars.push(
-        <rect
-          key={i}
-          x={x}
-          y={0}
-          width={width}
-          height={height}
-          fill="black"
-        />
-      );
-    }
-    x += width;
-  }
-  
-  return (
-    <svg width={x} height={height} className="border">
-      {bars}
-    </svg>
-  );
+  return <svg ref={svgRef} className="border"></svg>;
 };
 
 export default function SkuGenerator() {
@@ -317,7 +285,7 @@ export default function SkuGenerator() {
                   
                   {(codeType === 'barcode' || codeType === 'both') && (
                     <div className="flex flex-col items-center">
-                      <SVGBarcode value={sku} width={2} height={40} />
+                      <Barcode value={sku} width={2} height={40} />
                       <div className="print-sku text-xs mt-1 font-mono">
                         {sku}
                       </div>
