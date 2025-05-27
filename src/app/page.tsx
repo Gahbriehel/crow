@@ -25,7 +25,7 @@ function generateSku(businessName: string): string {
 }
 
 // Barcode component using JsBarcode
-const Barcode = ({ value, width = 2, height = 48 }: { value: string; width?: number; height?: number }) => {
+const Barcode = ({ value, width = 2, height = 38 }: { value: string; width?: number; height?: number }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   
   useEffect(() => {
@@ -54,8 +54,8 @@ export default function SkuGenerator() {
   const [sellingPrice, setSellingPrice] = useState("");
   const [sku, setSku] = useState("");
   const [error, setError] = useState("");
-  const [codeType, setCodeType] = useState<'qr' | 'barcode'>('barcode'); // Default to barcode
-  const [showPrice, setShowPrice] = useState(false); // Default to unchecked
+  const [codeType, setCodeType] = useState<'qr' | 'barcode'>('barcode');
+  const [showPrice, setShowPrice] = useState(false);
   const printRef = useRef<HTMLDivElement>(null);
 
   const handleGenerateSku = () => {
@@ -82,24 +82,29 @@ export default function SkuGenerator() {
     pageStyle: `
       @page {
         size: 2in 1in;
-        margin: 1mm;
+        margin: 0;
       }
       @media print {
-        body { margin: 0; }
+        body {
+          margin: 0 !important;
+          padding: 0 !important;
+        }
         .print-content {
           display: flex !important;
           flex-direction: column !important;
           align-items: center !important;
           justify-content: center !important;
-          width: 1.8in !important;
-          height: 1in !important;
+          width: 1.6in !important;
+          height: 0.8in !important;
+          margin: 0.1in auto !important; /* Center content */
           padding: 1mm !important;
           font-family: Arial, sans-serif !important;
           overflow: hidden !important;
+          box-sizing: border-box !important;
         }
-        .print-title {
-          font-size: 7px !important;
-          font-weight: bold !important;
+        .print-content .print-title {
+          font-size: 8px !important;
+          font-weight: 900 !important; /* Bolder text */
           margin-bottom: 1px !important;
           text-align: center !important;
           max-width: 100% !important;
@@ -108,25 +113,26 @@ export default function SkuGenerator() {
           text-overflow: ellipsis !important;
           white-space: nowrap !important;
         }
-        .print-price {
-          font-size: 7px !important;
-          font-weight: bold !important;
+        .print-content .print-price {
+          font-size: 8px !important;
+          font-weight: 900 !important; /* Bolder text */
           margin-bottom: 1px !important;
           text-align: center !important;
         }
-        .print-sku {
+        .print-content .print-sku {
           font-size: 6px !important;
+          font-weight: 700 !important; /* Bolder text */
           margin-top: 1px !important;
           text-align: center !important;
           font-family: monospace !important;
         }
-        .qrcode-svg {
-          width: 0.6in !important;
-          height: 0.6in !important;
+        .print-content .qrcode-svg {
+          width: 0.5in !important;
+          height: 0.5in !important;
         }
-        .barcode-svg {
-          width: 1.2in !important;
-          height: 0.6in !important;
+        .print-content .barcode-svg {
+          width: 1in !important;
+          height: 0.4in !important;
         }
       }
     `,
@@ -282,7 +288,7 @@ export default function SkuGenerator() {
                   {codeType === 'qr' && (
                     <QRCodeSVG
                       value={sku}
-                      size={60}
+                      size={48}
                       level="H"
                       includeMargin={true}
                       className="border qrcode-svg"
@@ -290,7 +296,7 @@ export default function SkuGenerator() {
                   )}
                   {codeType === 'barcode' && (
                     <div className="flex flex-col items-center">
-                      <Barcode value={sku} width={2} height={48} />
+                      <Barcode value={sku} width={2} height={38} />
                       <div className="print-sku text-xs mt-1 font-mono">
                         {sku}
                       </div>
