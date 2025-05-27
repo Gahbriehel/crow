@@ -73,6 +73,7 @@ export default function SkuGenerator() {
       setError("");
     } catch (err) {
       setError("Failed to generate SKU");
+      console.log(err)
     }
   };
 
