@@ -73,7 +73,6 @@ export default function SkuGenerator() {
       setError("");
     } catch (err) {
       setError("Failed to generate SKU");
-      console.log(err)
     }
   };
 
@@ -82,36 +81,55 @@ export default function SkuGenerator() {
     documentTitle: `SKU_${sku}`,
     pageStyle: `
       @page {
-        margin: 10mm;
-        size: auto;
+        margin: 0;
+        size: 2in 1in;
       }
       @media print {
-        body { margin: 0; }
+        body { 
+          margin: 0; 
+          padding: 0;
+          width: 2in;
+          height: 1in;
+        }
         .print-content {
           display: flex !important;
           flex-direction: column !important;
           align-items: center !important;
           justify-content: center !important;
-          padding: 10px !important;
+          width: 2in !important;
+          height: 1in !important;
+          padding: 2px !important;
           font-family: Arial, sans-serif !important;
+          box-sizing: border-box !important;
         }
         .print-title {
-          font-size: 12px !important;
+          font-size: 8px !important;
           font-weight: bold !important;
-          margin-bottom: 5px !important;
+          margin-bottom: 2px !important;
           text-align: center !important;
+          line-height: 1 !important;
         }
         .print-price {
-          font-size: 14px !important;
+          font-size: 10px !important;
           font-weight: bold !important;
-          margin-bottom: 10px !important;
+          margin-bottom: 3px !important;
           text-align: center !important;
+          line-height: 1 !important;
         }
         .print-sku {
-          font-size: 10px !important;
-          margin-top: 5px !important;
+          font-size: 6px !important;
+          margin-top: 1px !important;
           text-align: center !important;
           font-family: monospace !important;
+          line-height: 1 !important;
+        }
+        .print-qr {
+          width: 40px !important;
+          height: 40px !important;
+        }
+        .print-barcode svg {
+          max-width: 1.8in !important;
+          height: 20px !important;
         }
       }
     `,
@@ -259,39 +277,47 @@ export default function SkuGenerator() {
 
             {/* Print Preview */}
             <div className="bg-white border-2 border-dashed border-gray-300 p-4 rounded-lg mb-4">
-              <h3 className="text-sm font-semibold text-gray-600 mb-3 text-center">Print Preview</h3>
-              <div
-                ref={printRef}
-                className="print-content flex flex-col items-center justify-center p-4 bg-white"
-              >
-                <div className="print-title text-xs font-bold text-center mb-1 max-w-48 break-words">
-                  {productName.toUpperCase()}
-                </div>
-                {showPrice && sellingPrice && (
-                  <div className="print-price text-sm font-bold text-center mb-3">
-                    {formatToCurrency(Number(sellingPrice))}
+              <h3 className="text-sm font-semibold text-gray-600 mb-3 text-center">Print Preview (2" × 1")</h3>
+              <div className="flex justify-center">
+                <div
+                  ref={printRef}
+                  className="print-content flex flex-col items-center justify-center bg-white border"
+                  style={{ 
+                    width: '192px', // 2 inches at 96 DPI
+                    height: '96px',  // 1 inch at 96 DPI
+                    padding: '2px',
+                    fontSize: '8px'
+                  }}
+                >
+                  <div className="print-title text-xs font-bold text-center mb-1 leading-none">
+                    {productName.toUpperCase()}
                   </div>
-                )}
-                
-                <div className="flex flex-col items-center space-y-3">
-                  {(codeType === 'qr' || codeType === 'both') && (
-                    <QRCodeSVG
-                      value={sku}
-                      size={120}
-                      level="H"
-                      includeMargin={true}
-                      className="border"
-                    />
-                  )}
-                  
-                  {(codeType === 'barcode' || codeType === 'both') && (
-                    <div className="flex flex-col items-center">
-                      <Barcode value={sku} width={2} height={40} />
-                      <div className="print-sku text-xs mt-1 font-mono">
-                        {sku}
-                      </div>
+                  {showPrice && sellingPrice && (
+                    <div className="print-price text-sm font-bold text-center mb-1 leading-none">
+                      {formatToCurrency(Number(sellingPrice))}
                     </div>
                   )}
+                  
+                  <div className="flex flex-col items-center space-y-1">
+                    {(codeType === 'qr' || codeType === 'both') && (
+                      <QRCodeSVG
+                        value={sku}
+                        size={40}
+                        level="H"
+                        includeMargin={false}
+                        className="print-qr"
+                      />
+                    )}
+                    
+                    {(codeType === 'barcode' || codeType === 'both') && (
+                      <div className="flex flex-col items-center print-barcode">
+                        <Barcode value={sku} width={1} height={20} />
+                        <div className="print-sku text-xs mt-1 font-mono">
+                          {sku}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
