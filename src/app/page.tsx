@@ -91,7 +91,7 @@ export default function SkuGenerator() {
           flex-direction: column !important;
           align-items: center !important;
           justify-content: center !important;
-          width: 2in !important;
+          width: 1.8in !important;
           height: 1in !important;
           padding: 1mm !important;
           font-family: Arial, sans-serif !important;
@@ -125,8 +125,8 @@ export default function SkuGenerator() {
           height: 0.6in !important;
         }
         .barcode-svg {
-          width: 1.8in !important;
-          height: 0.5in !important;
+          width: 1.2in !important;
+          height: 0.6in !important;
         }
       }
     `,
