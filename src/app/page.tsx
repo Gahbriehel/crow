@@ -120,8 +120,8 @@ export default function SkuGenerator() {
           text-align: center !important;
         }
         .print-content .print-sku {
-          font-size: 6px !important;
-          font-weight: 700 !important; /* Bolder text */
+          font-size: 8px !important;
+          font-weight: 900 !important; /* Bolder text */
           margin-top: 1px !important;
           text-align: center !important;
           font-family: monospace !important;
