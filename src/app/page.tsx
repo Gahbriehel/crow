@@ -17,7 +17,7 @@ function generateSku(businessName: string): string {
     throw new Error("Business name cannot be empty");
   }
   const prefix = businessName.slice(0, 2).toUpperCase();
-  const digitCount = Math.floor(Math.random() * 3) + 8; // 8-10 digits
+  const digitCount = Math.floor(Math.random() * 3) + 6; // 8-10 digits
   const randomDigits = Array.from({ length: digitCount }, () =>
     Math.floor(Math.random() * 10).toString()
   ).join("");
@@ -94,7 +94,7 @@ export default function SkuGenerator() {
           flex-direction: column !important;
           align-items: center !important;
           justify-content: center !important;
-          width: 1.6in !important;
+          width: 1.4in !important;
           height: 0.8in !important;
           margin: 0.1in auto !important; /* Center content */
           padding: 1mm !important;
@@ -120,14 +120,14 @@ export default function SkuGenerator() {
           text-align: center !important;
         }
         .print-content .print-sku {
-          font-size: 10px !important;
+          font-size: 8px !important;
           font-weight: 900 !important; /* Bolder text */
           margin-top: 1px !important;
           text-align: center !important;
           font-family: monospace !important;
         }
         .print-content .qrcode-svg {
-          width: 0.5in !important;
+          width: 0.4in !important;
           height: 0.5in !important;
         }
         .print-content .barcode-svg {
